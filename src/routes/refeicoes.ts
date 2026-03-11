@@ -9,12 +9,22 @@ export async function refeicoesRoutes(app: FastifyInstance) {
       nome: z.string().min(3),
       descricao: z.string(),
       dentroDieta: z.boolean(),
-      userId: z.uuid(),
     })
 
-    const { nome, descricao, dentroDieta, userId } = createRefeicaoSchema.parse(
+    const { nome, descricao, dentroDieta } = createRefeicaoSchema.parse(
       request.body,
     )
+
+    const sessionId = request.cookies.sessionId
+
+    if (!sessionId) {
+      return reply.status(401).send('Acesso não autorizado, inicie a sessão.')
+    }
+
+    const userId = await knex('users')
+      .select('id')
+      .where('session_id', sessionId)
+      .first()
 
     await knex('refeicoes').insert({
       id: randomUUID(),
