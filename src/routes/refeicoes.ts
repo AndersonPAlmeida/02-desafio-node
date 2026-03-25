@@ -67,6 +67,23 @@ export async function refeicoesRoutes(app: FastifyInstance) {
       user_id: userId,
     })
 
-    return reply.status(201).send()
+    return reply.status(204).send()
+  })
+
+  app.delete('/', async (request, reply) => {
+    const sessionId = request.cookies.sessionId
+
+    if (!sessionId) {
+      return reply.status(401).send('Acesso não autorizado, inicie a sessão.')
+    }
+
+    const userId = await knex('users')
+      .select('id')
+      .where('session_id', sessionId)
+      .first()
+
+    await knex('refeicoes').where('id', userId).delete()
+
+    return reply.status(200).send()
   })
 }
