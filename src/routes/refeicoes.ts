@@ -31,7 +31,7 @@ export async function refeicoesRoutes(app: FastifyInstance) {
       nome,
       descricao,
       dentro_dieta: dentroDieta,
-      user_id: userId,
+      user_id: userId.id,
     })
 
     return reply.status(201).send()
@@ -59,12 +59,10 @@ export async function refeicoesRoutes(app: FastifyInstance) {
       .where('session_id', sessionId)
       .first()
 
-    await knex('refeicoes').where('id', userId).update({
-      id: randomUUID(),
+    await knex('refeicoes').where('user_id', userId.id).update({
       nome,
       descricao,
       dentro_dieta: dentroDieta,
-      user_id: userId,
     })
 
     return reply.status(204).send()
@@ -82,8 +80,27 @@ export async function refeicoesRoutes(app: FastifyInstance) {
       .where('session_id', sessionId)
       .first()
 
-    await knex('refeicoes').where('id', userId).delete()
+    await knex('refeicoes').where('user_id', userId).delete()
 
     return reply.status(200).send()
+  })
+
+  app.get('/', async (request, reply) => {
+    const sessionId = request.cookies.sessionId
+
+    if (!sessionId) {
+      return reply.status(401).send('Acesso não autorizado, inicie a sessão.')
+    }
+
+    const userId = await knex('users')
+      .select('id')
+      .where('session_id', sessionId)
+      .first()
+
+    const refeicoes = await knex('refeicoes')
+      .where('user_id', userId.id)
+      .select()
+
+    return { refeicoes }
   })
 }
