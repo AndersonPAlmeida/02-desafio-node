@@ -24,15 +24,25 @@ export async function refeicoesRoutes(app: FastifyInstance) {
   })
 
   app.post('/', async (request, reply) => {
-    const createRefeicaoSchema = z.object({
-      nome: z.string().min(3),
-      descricao: z.string(),
-      dentroDieta: z.boolean(),
-    })
+    const createRefeicaoSchema = z
+      .object({
+        nome: z.string().min(3),
+        descricao: z.string(),
+        dentroDieta: z.boolean(),
+        data: z.string(),
+        hora: z.string(),
+      })
+      .transform(({ data, hora, ...rest }) => {
+        const [dia, mes, ano] = data.split('/')
 
-    const { nome, descricao, dentroDieta } = createRefeicaoSchema.parse(
-      request.body,
-    )
+        return {
+          ...rest,
+          data_hora_refeicao: `${ano}-${mes}-${dia} ${hora}:00`,
+        }
+      })
+
+    const { nome, descricao, dentroDieta, data_hora_refeicao } =
+      createRefeicaoSchema.parse(request.body)
 
     const sessionId = request.cookies.sessionId
 
@@ -51,6 +61,7 @@ export async function refeicoesRoutes(app: FastifyInstance) {
       descricao,
       dentro_dieta: dentroDieta,
       user_id: userId.id,
+      data_hora_refeicao,
     })
 
     return reply.status(201).send()
@@ -68,25 +79,31 @@ export async function refeicoesRoutes(app: FastifyInstance) {
       return reply.status(401).send('Acesso não autorizado, inicie a sessão.')
     }
 
-    const createRefeicaoSchema = z.object({
-      nome: z.string().min(3),
-      descricao: z.string(),
-      dentroDieta: z.boolean(),
-    })
+    const createRefeicaoSchema = z
+      .object({
+        nome: z.string().min(3),
+        descricao: z.string(),
+        dentroDieta: z.boolean(),
+        data: z.string(),
+        hora: z.string(),
+      })
+      .transform(({ data, hora, ...rest }) => {
+        const [dia, mes, ano] = data.split('/')
 
-    const { nome, descricao, dentroDieta } = createRefeicaoSchema.parse(
-      request.body,
-    )
+        return {
+          ...rest,
+          data_hora_refeicao: `${ano}-${mes}-${dia} ${hora}:00`,
+        }
+      })
 
-    const userId = await knex('users')
-      .select('id')
-      .where('session_id', sessionId, id)
-      .first()
+    const { nome, descricao, dentroDieta, data_hora_refeicao } =
+      createRefeicaoSchema.parse(request.body)
 
-    await knex('refeicoes').where('user_id', userId.id).update({
+    await knex('refeicoes').where('id', id).update({
       nome,
       descricao,
       dentro_dieta: dentroDieta,
+      data_hora_refeicao,
     })
 
     return reply.status(204).send()
