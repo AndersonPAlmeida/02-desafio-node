@@ -6,3 +6,5 @@
 - [x] Deletar refeição feita pelo usuário
 - [x] Selecionar refeição feita pelo usuário
 - [x] Deve ser possível visualizar uma única refeição
+- [] Métricas
+-- [x] Quantidade Total de refeições
