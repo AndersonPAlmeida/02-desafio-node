@@ -8,3 +8,4 @@
 - [x] Deve ser possível visualizar uma única refeição
 - [] Métricas
 -- [x] Quantidade Total de refeições
+-- [x] Quantidade Total de refeições dentro da dieta
