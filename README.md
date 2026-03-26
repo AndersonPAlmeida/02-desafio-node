@@ -9,3 +9,4 @@
 - [] Métricas
 -- [x] Quantidade Total de refeições
 -- [x] Quantidade Total de refeições dentro da dieta
+-- [x] Quantidade total de refeições fora da dieta
