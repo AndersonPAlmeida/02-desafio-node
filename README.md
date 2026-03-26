@@ -6,7 +6,8 @@
 - [x] Deletar refeição feita pelo usuário
 - [x] Selecionar refeição feita pelo usuário
 - [x] Deve ser possível visualizar uma única refeição
-- [] Métricas
+- [x] Métricas
 -- [x] Quantidade Total de refeições
 -- [x] Quantidade Total de refeições dentro da dieta
 -- [x] Quantidade total de refeições fora da dieta
+-- [x] Melhor sequência de refeições dentro da dieta
