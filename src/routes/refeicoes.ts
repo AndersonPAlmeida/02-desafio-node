@@ -23,6 +23,23 @@ export async function refeicoesRoutes(app: FastifyInstance) {
     return { refeicoes }
   })
 
+  app.get('/:id', async (request, reply) => {
+    const getRefeicaoParamsSchema = z.object({
+      id: z.uuid(),
+    })
+
+    const sessionId = request.cookies.sessionId
+    const { id } = getRefeicaoParamsSchema.parse(request.params)
+
+    if (!sessionId) {
+      return reply.status(401).send('Acesso não autorizado, inicie a sessão.')
+    }
+
+    const refeicoes = await knex('refeicoes').where('id', id).select()
+
+    return { refeicoes }
+  })
+
   app.post('/', async (request, reply) => {
     const createRefeicaoSchema = z
       .object({
