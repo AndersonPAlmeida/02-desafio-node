@@ -35,8 +35,19 @@ export async function refeicoesRoutes(app: FastifyInstance) {
       return reply.status(401).send('Acesso não autorizado, inicie a sessão.')
     }
 
-    const refeicoes = await knex('refeicoes').where('id', id).select()
+    const userId = await knex('users')
+      .select('id')
+      .where('session_id', sessionId)
+      .first()
 
+    const refeicoes = await knex('refeicoes')
+      .where('id', id)
+      .andWhere('user_id', userId.id)
+      .select()
+
+    if (refeicoes.length === 0) {
+      return { message: 'Não há refeições cadastratadas para esse usuário' }
+    }
     return { refeicoes }
   })
 
@@ -116,6 +127,19 @@ export async function refeicoesRoutes(app: FastifyInstance) {
     const { nome, descricao, dentroDieta, data_hora_refeicao } =
       createRefeicaoSchema.parse(request.body)
 
+    const userId = await knex('users')
+      .select('id')
+      .where('session_id', sessionId)
+      .first()
+
+    const testeAuth = await knex('refeicoes')
+      .where('id', id)
+      .andWhere('user_Id', userId.id)
+
+    if (testeAuth.length === 0) {
+      return reply.status(404).send()
+    }
+
     await knex('refeicoes').where('id', id).update({
       nome,
       descricao,
@@ -136,6 +160,19 @@ export async function refeicoesRoutes(app: FastifyInstance) {
 
     if (!sessionId) {
       return reply.status(401).send('Acesso não autorizado, inicie a sessão.')
+    }
+
+    const userId = await knex('users')
+      .select('id')
+      .where('session_id', sessionId)
+      .first()
+
+    const testeAuth = await knex('refeicoes')
+      .where('id', id)
+      .andWhere('user_Id', userId.id)
+
+    if (testeAuth.length === 0) {
+      return reply.status(404).send()
     }
 
     await knex('refeicoes').where('id', id).delete()

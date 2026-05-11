@@ -11,3 +11,7 @@
 -- [x] Quantidade Total de refeições dentro da dieta
 -- [x] Quantidade total de refeições fora da dieta
 -- [x] Melhor sequência de refeições dentro da dieta
+-- [] Modificações que só o usuário pode fazer em suas refeições
+--- [x] Visualizar refeição  qual ele criou
+--- [x] Editar refeição  qual ele criou
+--- [x] Apagar as refeições o qual ele criou
