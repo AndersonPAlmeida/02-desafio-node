@@ -118,7 +118,7 @@ export async function refeicoesRoutes(app: FastifyInstance) {
 
     const testeAuth = await knex('refeicoes')
       .where('id', id)
-      .andWhere('user_Id', userId.id)
+      .andWhere('user_id', userId.id)
 
     if (testeAuth.length === 0) {
       return reply.status(404).send()
@@ -149,7 +149,7 @@ export async function refeicoesRoutes(app: FastifyInstance) {
 
     const testeAuth = await knex('refeicoes')
       .where('id', id)
-      .andWhere('user_Id', userId.id)
+      .andWhere('user_id', userId.id)
 
     if (testeAuth.length === 0) {
       return reply.status(404).send()
