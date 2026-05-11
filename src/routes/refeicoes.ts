@@ -4,12 +4,8 @@ import { knex } from '../database'
 import { randomUUID } from 'crypto'
 
 export async function refeicoesRoutes(app: FastifyInstance) {
-  app.get('/', async (request, reply) => {
+  app.get('/', async (request) => {
     const sessionId = request.cookies.sessionId
-
-    if (!sessionId) {
-      return reply.status(401).send('Acesso não autorizado, inicie a sessão.')
-    }
 
     const userId = await knex('users')
       .select('id')
@@ -23,17 +19,13 @@ export async function refeicoesRoutes(app: FastifyInstance) {
     return { refeicoes }
   })
 
-  app.get('/:id', async (request, reply) => {
+  app.get('/:id', async (request) => {
     const getRefeicaoParamsSchema = z.object({
       id: z.uuid(),
     })
 
     const sessionId = request.cookies.sessionId
     const { id } = getRefeicaoParamsSchema.parse(request.params)
-
-    if (!sessionId) {
-      return reply.status(401).send('Acesso não autorizado, inicie a sessão.')
-    }
 
     const userId = await knex('users')
       .select('id')
@@ -74,10 +66,6 @@ export async function refeicoesRoutes(app: FastifyInstance) {
 
     const sessionId = request.cookies.sessionId
 
-    if (!sessionId) {
-      return reply.status(401).send('Acesso não autorizado, inicie a sessão.')
-    }
-
     const userId = await knex('users')
       .select('id')
       .where('session_id', sessionId)
@@ -102,10 +90,6 @@ export async function refeicoesRoutes(app: FastifyInstance) {
 
     const sessionId = request.cookies.sessionId
     const { id } = getRefeicaoParamsSchema.parse(request.params)
-
-    if (!sessionId) {
-      return reply.status(401).send('Acesso não autorizado, inicie a sessão.')
-    }
 
     const createRefeicaoSchema = z
       .object({
@@ -157,10 +141,6 @@ export async function refeicoesRoutes(app: FastifyInstance) {
 
     const sessionId = request.cookies.sessionId
     const { id } = getRefeicaoParamsSchema.parse(request.params)
-
-    if (!sessionId) {
-      return reply.status(401).send('Acesso não autorizado, inicie a sessão.')
-    }
 
     const userId = await knex('users')
       .select('id')
